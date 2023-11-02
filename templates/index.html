@@ -1,0 +1,31 @@
+<h1>MoH Prep Database</h1>
+
+<p>Search for ingredient: <input type="text" placeholder="Search..." id="myInput" onkeyup="filterFunction()"></p>
+
+<div id="myDropdown" class="dropdown-content">
+{% for ingredient in ingredients %}
+<p><a href="{{ ingredient.href }}">{{ ingredient.name }}</a></p>
+{% endfor %}
+</div>
+
+<form action="/add-ingredient" method="post">
+<p>Add new ingredient: <input type="text" name="newIngredient"><input type="submit" value="Add"></p>
+</form>
+
+<script>
+function filterFunction() {
+    var input, filter, a, i;
+    input = document.getElementById("myInput");
+    filter = input.value.toUpperCase();
+    div = document.getElementById("myDropdown");
+    a = div.getElementsByTagName("a");
+    for (i = 0; i < a.length; i++) {
+        txtValue = a[i].textContent || a[i].innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            a[i].style.display = "";
+        } else {
+            a[i].style.display = "none";
+        }
+    }
+}
+</script>
