@@ -1,0 +1,8 @@
+<a href="/"><h1>MoH Prep Database</h1></a>
+<h2>{{ ingredient.name }}, {{ prep.name }}</h2>
+
+<p><form action="/ingredient/{{ ingredient.id }}/update-preparation/{{ prep.id }}" method="post">
+    <input type="text" name="ingredientAmount" value="{% if prep.amount is not none %}{{ prep.amount }}{% endif %}"> is the right amount to feed 
+    <input type="text" name="numGuests" value="{% if prep.guests is not none %}{{ prep.guests }}{% endif %}"> guests 
+    <input type="submit" value="Update">
+</form></p>

@@ -1,0 +1,32 @@
+<a href="/"><h1>MoH Prep Database</h1></a>
+<h2>Preparations of {{ ingredient.name }}</h2>
+
+<p>Search for preparation: <input type="text" placeholder="Search..." id="myInput" onkeyup="filterFunction()"></p>
+
+<div id="myDropdown" class="dropdown-content">
+{% for prep in preparations %}
+<p><a href="{{ prep.href }}">{{ prep.name }}</a></p>
+{% endfor %}
+</div>
+
+<form action="/ingredient/{{ ingredient.id }}/add-preparation" method="post">
+<p>Add new preparation: <input type="text" name="newPrep"><input type="submit" value="Add"></p>
+</form>
+
+<script>
+function filterFunction() {
+    var input, filter, a, i;
+    input = document.getElementById("myInput");
+    filter = input.value.toUpperCase();
+    div = document.getElementById("myDropdown");
+    a = div.getElementsByTagName("a");
+    for (i = 0; i < a.length; i++) {
+        txtValue = a[i].textContent || a[i].innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            a[i].style.display = "";
+        } else {
+            a[i].style.display = "none";
+        }
+    }
+}
+</script>

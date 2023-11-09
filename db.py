@@ -18,25 +18,49 @@ class IngredientPrepDb:
                   {"name" : 'Preparations',
                    "columns" : 'id INTEGER PRIMARY KEY ASC, name, ingredientId, dateOfPrep, numGuests, ingredientAmount'}]
 
-        existingTables = []
-        for table in self.db_conn.cursor().execute("SELECT name FROM sqlite_master"):
-            existingTables.append(table[0])
-
         for table in schema:
-            if table["name"] in existingTables:
-                self.db_conn.cursor().execute(f'DROP TABLE {table["name"]}')
+            self.db_conn.cursor().execute(f'DROP TABLE IF EXISTS {table["name"]}')
             self.db_conn.cursor().execute(f'CREATE TABLE {table["name"]}({table["columns"]})')
 
     def add_ingredient(self, ingredient_name : str):
         with self.mutex:
-            self.db_conn.cursor().execute("INSERT INTO Ingredients(name) VALUES (:ingredient)", {"ingredient" : ingredient_name })
+            insert = "INSERT INTO Ingredients(name) VALUES (:ingredient)"
+            self.db_conn.cursor().execute(insert, {"ingredient" : ingredient_name})
             self.db_conn.commit()
     
-    def get_all_ingredients(self):
+    def get_ingredient(self, ingredient_id : int):
         with self.mutex:
-            ingredients = []
-            for row in self.db_conn.cursor().execute("SELECT name FROM Ingredients"):
-                ingredients.append(row[0])
+            select = "SELECT * FROM Ingredients WHERE id = (:ingredient_id)"
+            return self.db_conn.cursor().execute(select, {"ingredient_id" : ingredient_id}).fetchone()
+    
+    def get_all_ingredients(self):
+        with self.mutex:    
+            return self.db_conn.cursor().execute("SELECT * FROM Ingredients")
+    
+    def update_preparation(self, prep_id : int, ingredient_amount, num_guests):
+        with self.mutex:
+            update = "UPDATE Preparations SET numGuests=:guests, ingredientAmount=:amt WHERE id=:id"
+            self.db_conn.cursor().execute(update, {"id" : prep_id, "guests" : num_guests, "amt" : ingredient_amount})
+            self.db_conn.commit()
 
-            return ingredients
+    def add_preparation(self, ingredient_id : int, prep_name : str):
+        with self.mutex:
+            insert = "INSERT INTO Preparations(name, ingredientId) VALUES (:name, :id)"
+            self.db_conn.cursor().execute(insert, {"name" : prep_name, "id" : ingredient_id})
+            self.db_conn.commit()
 
+    def get_preparation(self, prep_id : int):
+        with self.mutex:
+            select = "SELECT * FROM Preparations WHERE id = (:prep_id)"
+            return self.db_conn.cursor().execute(select, {"prep_id" : prep_id}).fetchone()
+        
+    def get_preparations_of(self, ingredient_id : int):
+        preparations = []
+
+        with self.mutex:
+            select = "SELECT * FROM Preparations WHERE ingredientId = (:id)"
+            for row in self.db_conn.cursor().execute(select, {"id" : ingredient_id}):
+                preparations.append((row[0], row[1]))
+
+        return preparations
+    
