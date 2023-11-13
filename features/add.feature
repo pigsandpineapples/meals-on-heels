@@ -7,7 +7,7 @@ Then the ingredient should be added
 
 Scenario: adding preparations
 Given I am an authorized user of the system
-And some ingredients have already been added
+And some ingredients and preparations have already been added
 When I add a new preparation for an existing ingredient
 Then the preparation should be added
 
