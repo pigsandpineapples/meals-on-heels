@@ -4,5 +4,5 @@ def before_all(context):
     app.testing = True
 
 def before_scenario(context, scenario):
-    client = app.test_client()
+    context.client = app.test_client()
     reset_db(":memory:")

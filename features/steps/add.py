@@ -24,8 +24,7 @@ def step_impl(context):
     page = context.client.get("/")
     tags = BeautifulSoup(page.get_data(as_text=True), 'html.parser')
     ingredientDropdown = tags.find(id='myDropdown')
-    assert(ingredientDropdown.find(string="Clabberflower"))
-    #assert(ingredientDropdown.find(string=context.newIngredient))
+    assert(ingredientDropdown.find(string=context.newIngredient))
 
 @then('the preparation should be added')
 def step_impl(context):
